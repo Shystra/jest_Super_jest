@@ -1,8 +1,9 @@
 import express, { Application } from 'express';
+import crypto from 'crypto';
 
 
 class App {
-    private app: Application
+    public app: Application
     constructor(){
         this.app = express();
         this.config();
@@ -15,9 +16,33 @@ class App {
     }
 
     routes(){
-        this.app.use('/', (req, resp) => {
+        var users:any = [];
+        this.app.get('/', (req, resp) => {
             return resp.json({ ok: true })
-        })
+        });
+
+
+
+        this.app.post('/user', (req, res) => {
+            const {email, password, name} = req.body
+
+            const id = crypto.randomUUID();
+
+            const data = {
+                id,
+                email,
+                password,
+                name
+            };
+            users.push(data)
+            return res.status(201).json(data)
+        });
+
+
+
+        this.app.get('/users', (req, res) => {
+            return res.status(200).json(users);
+        });
     }
 
     listen(port:number){
